@@ -4,7 +4,7 @@ c:\program files (x86)\microsoft visual studio 14.0\vc\atlmfc\include\afx.h(38):
   _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
 c:\program files (x86)\windows kits\8.1\include\um\winuser.h(12332): warning C4005: CDS_FULLSCREEN: изменение макроопределения
   e:\tpksprojects\kp_v3\kp_v3\app.cpp(1): note: см. предыдущее определение "CDS_FULLSCREEN"
-e:\tpksprojects\kp_v3\kp_v3\app.cpp(188): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
 e:\tpksprojects\kp_v3\kp_v3\app.cpp(189): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+e:\tpksprojects\kp_v3\kp_v3\app.cpp(190): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
   KP_V3.vcxproj -> E:\TPKSProjects\KP_V3\Debug\KP_V3.exe
   KP_V3.vcxproj -> E:\TPKSProjects\KP_V3\Debug\KP_V3.pdb (Full PDB)

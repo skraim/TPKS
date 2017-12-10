@@ -15,10 +15,11 @@ struct {
 	int baseR = 330;
 	int kneeM = 65;
 	int shoulderM = 60;
-	int wristR = 170;
+	int wristR = 180;
 	int kleshnyaL = -2;
 	int kleshnyaR = -2;
 }dosmth;
+bool sphereFlag = false;
 double zoom = -6;
 int vspos = 50, hspos = 50;
 AUX_RGBImageRec *pImage;
@@ -28,8 +29,8 @@ GLUquadricObj* m_qObj;
 CMain::CMain()
 {
 	
-	pImage = auxDIBImageLoad("white.bmp");
-	pImage2 = auxDIBImageLoad("black.bmp");
+	pImage = auxDIBImageLoad("room.bmp");
+	pImage2 = auxDIBImageLoad("robo.bmp");
 	pImage3 = auxDIBImageLoad("eye.bmp");
 	Create(NULL, "MR-999e", WS_OVERLAPPEDWINDOW | WS_VSCROLL | WS_HSCROLL, rectDefault, NULL, NULL);
 	SetScrollPos(SB_HORZ, 50);
@@ -41,7 +42,7 @@ CMain::CMain()
 	pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
 	pfd.iPixelType = PFD_TYPE_RGBA;
 	pfd.cColorBits = 24;
-	pfd.cDepthBits = 32;
+	pfd.cDepthBits = 42;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 	CClientDC dc(this);
 	int nPixelFormat = ChoosePixelFormat(dc.m_hDC, &pfd);
@@ -194,7 +195,12 @@ void CMain::OnOpenGLFirst()
 	glPushMatrix();
 	glPushMatrix();
 	glTranslated(-2,0,0);
-	gluSphere(m_qObj,0.2,10,10);
+	glRotated(90, -1, 0, 0);
+	glRotated(90, 0, -1, 0);
+	glRotated(35, -1, 0, 0);
+	if (!sphereFlag) {
+		gluSphere(m_qObj, 0.2, 10, 10);
+	}
 	glPopMatrix();
 
 	glDisable(GL_TEXTURE_2D);
@@ -401,7 +407,21 @@ void CMain::OnOpenGLFirst()
 	glTexCoord2i(0, 0);	glVertex3d(-0.19, 0.11, 0);
 	glTexCoord2i(0, 1);	glVertex3d(-0.28, 0.11, 0.25);
 	glEnd();
-
+	glTranslated(0, 0, 0.55); 
+	if (sphereFlag) {
+		glDisable(GL_TEXTURE_2D);
+		glEnable(GL_TEXTURE_2D);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPEAT);
+		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, pImage3->sizeX, pImage3->sizeY,
+			GL_RGB, GL_UNSIGNED_BYTE, pImage3->data);
+		gluSphere(m_qObj, 0.2, 10, 10);
+		glDisable(GL_TEXTURE_2D);
+		glEnable(GL_TEXTURE_2D);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPEAT);
+		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, pImage2->sizeX, pImage2->sizeY,
+			GL_RGB, GL_UNSIGNED_BYTE, pImage2->data);
+	}
+	glTranslated(0, 0, -0.55);
 	glRotated(90, 1, 0, 0);
 	glPushMatrix();
 	glRotated(dosmth.kleshnyaL*1.5, 0, 0, 1);
@@ -416,6 +436,7 @@ void CMain::OnOpenGLFirst()
 	glRotated(dosmth.kleshnyaR * 1.35, 0, 0, 1);
 	makeHand2ndHalf();
 	glPopMatrix();
+
 }
 
 void CMain::makeHand1stHalf() {
@@ -470,42 +491,42 @@ void CMain::OnKeyDown(UINT nChar, UINT nRepeat, UINT nFlag)
 	switch (nChar) {
 	case VK_NUMPAD4:
 		if (dosmth.baseR > 0) {
-			dosmth.baseR -= 3;
+			dosmth.baseR --;
 		}
 		break;
 	case VK_NUMPAD6:
 		if (dosmth.baseR <= 350) {
-			dosmth.baseR += 3;
+			dosmth.baseR ++;
 		}
 		break;
 	case VK_NUMPAD2:
 		if (dosmth.kneeM > 0) {
-			dosmth.kneeM -= 3;
+			dosmth.kneeM --;
 		}
 		break;
 	case VK_NUMPAD0:
 		if (dosmth.kneeM + dosmth.shoulderM <= 140 && dosmth.kneeM <= 120) {
-			dosmth.kneeM += 3;
+			dosmth.kneeM ++;
 		}
 		break;
 	case VK_NUMPAD8:
 		if (dosmth.shoulderM > 0) {
-			dosmth.shoulderM -= 3;
+			dosmth.shoulderM --;
 		}
 		break;
 	case VK_NUMPAD5:
 		if (dosmth.kneeM + dosmth.shoulderM <= 140 && dosmth.shoulderM <= 135) {
-			dosmth.shoulderM += 3;
+			dosmth.shoulderM ++;
 		}
 		break;
 	case VK_NUMPAD1:
 		if (dosmth.wristR > 0) {
-			dosmth.wristR -= 3;
+			dosmth.wristR --;
 		}
 		break;
 	case VK_NUMPAD3:
 		if (dosmth.wristR <= 340) {
-			dosmth.wristR += 3;
+			dosmth.wristR ++;
 		}
 		break;
 	case VK_NUMPAD7:
@@ -521,71 +542,109 @@ void CMain::OnKeyDown(UINT nChar, UINT nRepeat, UINT nFlag)
 		}
 		break;
 	case VK_SPACE: 
-		/*dosmth.kleshnyaL=-10;
-		dosmth.kleshnyaR = -10;
-		dosmth.baseR = 270;
-		dosmth.kneeM = 68;
-		dosmth.shoulderM = 54;
-		dosmth.wristR = 170;*/
 		takeSphere();
-
-
 	}
 	Invalidate(false);
 }
 
 void CMain::takeSphere() {
+	if (dosmth.wristR > 180) {
+		while (dosmth.wristR > 170) {
+			dosmth.wristR--;
+			this->RedrawWindow();
+			Sleep(50);
+		}
+	}
+	if (dosmth.wristR < 180) {
+		while (dosmth.wristR < 170) {
+			dosmth.wristR++;
+			this->RedrawWindow();
+			Sleep(50);
+		}
+	} 
 	while (dosmth.kleshnyaL > -10) {
 		dosmth.kleshnyaL--;
 		dosmth.kleshnyaR--;
-		Sleep(100);
+		this->RedrawWindow();
+		Sleep(50);
 	}
 	if (dosmth.baseR > 270) {
 		while (dosmth.baseR > 270) {
 			dosmth.baseR--;
-			Sleep(100);
+			this->RedrawWindow();
+			Sleep(50);
 		}
 	}
 	if (dosmth.baseR < 270) {
 		while (dosmth.baseR < 270) {
 			dosmth.baseR++;
-			Sleep(100);
+			this->RedrawWindow();
+			Sleep(50);
 		}
 	}
 	if (dosmth.kneeM > 68) {
 		while (dosmth.kneeM > 68) {
 			dosmth.kneeM--;
-			Sleep(100);
+			this->RedrawWindow();
+			Sleep(50);
 		}
 	}
 	if (dosmth.kneeM < 68) {
 		while (dosmth.kneeM < 68) {
 			dosmth.kneeM++;
-			Sleep(100);
+			this->RedrawWindow();
+			Sleep(50);
 		}
 	}
 	if (dosmth.shoulderM > 54) {
 		while (dosmth.shoulderM > 54) {
 			dosmth.shoulderM--;
-			Sleep(100);
+			this->RedrawWindow();
+			Sleep(50);
 		}
 	}
 	if (dosmth.shoulderM < 54) {
 		while (dosmth.shoulderM < 54) {
 			dosmth.shoulderM++;
-			Sleep(100);
+			this->RedrawWindow();
+			Sleep(50);
 		}
 	}
-	if (dosmth.wristR > 170) {
-		while (dosmth.wristR > 170) {
-			dosmth.wristR--;
-			Sleep(100);
-		}
+	sphereFlag = true;
+	while (dosmth.kneeM > 0) {
+		dosmth.kneeM--;
+		this->RedrawWindow();
+		Sleep(50);
 	}
-	if (dosmth.wristR > 170) {
-		while (dosmth.wristR > 170) {
-			dosmth.wristR++;
-			Sleep(100);
-		}
-	} 
+	while (dosmth.wristR > 90) {
+		dosmth.wristR--;
+		this->RedrawWindow();
+		Sleep(50);
+	}
+	while (dosmth.shoulderM > 0) {
+		dosmth.shoulderM--;
+		this->RedrawWindow();
+		Sleep(50);
+	}
+	while (dosmth.baseR > 90) {
+		dosmth.baseR--;
+		this->RedrawWindow();
+		Sleep(50);
+	}
+	while (dosmth.shoulderM < 90) {
+		dosmth.shoulderM++;
+		this->RedrawWindow();
+		Sleep(50);
+	}
+	while (dosmth.wristR < 270) {
+		dosmth.wristR++;
+		this->RedrawWindow();
+		Sleep(50);
+	}
+	while (dosmth.shoulderM > 45) {
+		dosmth.shoulderM--;
+		this->RedrawWindow();
+		Sleep(50);
+	}
+	Invalidate(false);
 }

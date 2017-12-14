@@ -530,15 +530,19 @@ void CMain::OnKeyDown(UINT nChar, UINT nRepeat, UINT nFlag)
 		}
 		break;
 	case VK_NUMPAD7:
-		if (dosmth.kleshnyaL > -10 && dosmth.kleshnyaR > -10) {
-			dosmth.kleshnyaL--;
-			dosmth.kleshnyaR--;
+		if (!sphereFlag) {
+			if (dosmth.kleshnyaL > -10 && dosmth.kleshnyaR > -10) {
+				dosmth.kleshnyaL--;
+				dosmth.kleshnyaR--;
+			}
 		}
 		break;
 	case VK_NUMPAD9:
-		if (dosmth.kleshnyaL < 10 && dosmth.kleshnyaR < 10) {
-			dosmth.kleshnyaL++;
-			dosmth.kleshnyaR++;
+		if (!sphereFlag) {
+			if (dosmth.kleshnyaL < 10 && dosmth.kleshnyaR < 10) {
+				dosmth.kleshnyaL++;
+				dosmth.kleshnyaR++;
+			}
 		}
 		break;
 	case VK_SPACE: 
